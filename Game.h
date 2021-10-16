@@ -3,6 +3,7 @@
 #include<map>
 #include"Player.h"
 #include"Bullet.h"
+#include"Enemy.h"
 /* ทำตัวเหมือนแก่นทำงานหลักของเกม game engine
     รวมคลาสไว้เข้าด้วยกัน */
 
@@ -23,15 +24,25 @@ std::map<std::string,sf:: Texture*>textures; //ในแต่ละstringจะ
 //World
 sf::Texture worldbackgroundTex;
 sf::Sprite worldbackground;
+//Bullets
 std::vector<Bullet*>bullets;
 
 //Player
 Player*player;
+
+//Enemies
+
+float spawnTimer;
+float spawnTimerMax;
+Enemy*enemy;
+std::vector<Enemy*> enemies;//เก็บค่าจาก class Enemy มาไว้ในvector
+
 //privarte function
    void initWindow();
    void initBulletSprite();
    void initTextures();
    void initPlayer();
+   void initEnemies();
    void initWorld();
 
 public:
@@ -50,6 +61,7 @@ void run();
 void pollEvents();
 void updateInput();
 void updateBullets();
+void updateEnemies();
 void update();
 void render();
 void renderWorld();
