@@ -47,7 +47,7 @@ void Player::move(float dirX, float dirY){
 const bool Player::canAttack(){
 
 if(this->attackCooldown>=this->attackCooldownMax){
-    this->attackCooldown=0.f;
+    this->attackCooldown=0.f;//ให้มันเริ่มนับใหม่
     return true;
 }
 
@@ -55,7 +55,7 @@ if(this->attackCooldown>=this->attackCooldownMax){
 }
 void Player::updateAttack(){
 if(this->attackCooldown < this->attackCooldownMax){
-    this->attackCooldown+=0.5f;
+    this->attackCooldown+=0.5f;//เพิ่มคูลดาวน์ทีละ0.5
     }
 
 }
