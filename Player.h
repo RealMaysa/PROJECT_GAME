@@ -12,7 +12,7 @@ private:
   sf::Texture texture;
   float movementSpeed;
   float attackCooldown;
-  float attackCooldownMax;
+  float attackCooldownMax;//เมื่อค่าถึงmaxแล้วค่อยจะยิงได้
   //Private Functions
   void initVariables();
   void initTexture();
