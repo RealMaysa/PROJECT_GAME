@@ -13,6 +13,10 @@ private:
   float movementSpeed;
   float attackCooldown;
   float attackCooldownMax;//เมื่อค่าถึงmaxแล้วค่อยจะยิงได้
+  int hp;
+  int hpMax;
+  
+
   //Private Functions
   void initVariables();
   void initTexture();
@@ -22,9 +26,15 @@ public:
     Player();
     virtual~Player();
      //Accessor
-
+  const sf::FloatRect getBounds() const;
   const sf::Vector2f&getPos()const;
-
+  const int&getHp() const;
+  const int&getHpMax() const;
+   //Modifier
+   void setPosition(const sf::Vector2f pos);
+   void setPosition(const float x,const float y);
+   void setHp(const int hp);
+   void loseHp(const int value);
     //Functions
     void move(const float dirX,const float dirY);
     const bool canAttack();//ถ้า attack แล้วจะreset
