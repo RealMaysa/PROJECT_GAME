@@ -10,6 +10,7 @@ private:
   sf::Texture enemytexture;
   float movementSpeed;
     int type;
+    int speed;
     int hp;
     int hpMax;
     int damage;
@@ -20,6 +21,10 @@ private:
 public:
     Enemy(float dirX,float dirY);
     virtual ~Enemy();
+    //Acesssor
+    const sf::FloatRect getBounds() const;
+    const int& getPoints() const;
+    const int& getDamage() const;
     void update();
     void render(sf::RenderTarget*target);
 };
