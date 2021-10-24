@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H 
 #include<map>
+#include<string>
+#include<sstream>
 #include"Player.h"
 #include"Bullet.h"
 #include"Enemy.h"
@@ -24,12 +26,21 @@ std::map<std::string,sf:: Texture*>textures; //ในแต่ละstringจะ
 //World
 sf::Texture worldbackgroundTex;
 sf::Sprite worldbackground;
+//GUI แสดงผลให้ผู้เล่นรู้
+sf::Font font;
+sf::Text pointText;
+sf::Text gameOverText;
+//Systems
+unsigned point;
 //Bullets
 std::vector<Bullet*>bullets;
 
 //Player
 Player*player;
 
+//PlayerGUI
+sf::RectangleShape PlayerHpBar;//ส่วนที่เปลี่ยนตามHp
+sf::RectangleShape PlayerHpBarBack;
 //Enemies
 
 float spawnTimer;
@@ -37,13 +48,17 @@ float spawnTimerMax;
 Enemy*enemy;
 std::vector<Enemy*> enemies;//เก็บค่าจาก class Enemy มาไว้ในvector
 
+
+
 //privarte function
    void initWindow();
    void initBulletSprite();
    void initTextures();
+   void initGUI();
    void initPlayer();
    void initEnemies();
    void initWorld();
+   void initSystems();
 
 public:
 
@@ -52,17 +67,20 @@ public:
     Game();
     virtual~Game();
 
-//Accessor
-
 
 
     //ฟังก์ชัน
 void run();
 void pollEvents();
 void updateInput();
-void updateBullets();
+void updateGUI();
 void updateEnemies();
-void update();
+void updateWorld();
+void updateCollision();
+void updateCombat();
+void updateBullets();
+void update(); 
+void renderGUI();
 void render();
 void renderWorld();
 };
