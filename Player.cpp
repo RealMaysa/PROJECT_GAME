@@ -3,6 +3,8 @@ void Player::initVariables(){
 this->movementSpeed=1.f;
 this->attackCooldownMax=10.f;
 this->attackCooldown=this->attackCooldownMax;
+this->hpMax=100;
+this->hp=this->hpMax;
 
 }
 void Player::initTexture(){
@@ -33,6 +35,11 @@ this->initVariables();
 Player::~Player()
 {
 }
+//Acesssor
+const sf::FloatRect Player::getBounds() const{
+
+     return this->sprite.getGlobalBounds();
+}
 
 const sf::Vector2f &Player::getPos() const{
 
@@ -42,6 +49,42 @@ return this->sprite.getPosition(); //สร้างกระสุนในต�
 void Player::move(float dirX, float dirY){
 
     this->sprite.move(this->movementSpeed*dirX,this->movementSpeed*dirY);
+}
+
+const int &Player::getHp() const{
+
+return this->hp;
+
+}
+const int &Player::getHpMax() const{
+
+return this->hpMax;
+
+}
+//MOdifier
+void Player::setPosition(sf::Vector2f pos){
+
+this->sprite.setPosition(pos);
+
+}
+void Player::setPosition(float x, float y){
+
+this->sprite.setPosition(x,y);
+
+}
+void Player::setHp(int hp){
+
+
+this->hp=hp;//set ทุกอย่างที่เข้ามาในนี้เป็นHP
+
+}
+void Player::loseHp(int value){
+
+this->hp-=value;//set ทุกอย่างที่เข้ามาในนี้ให้ลบHp
+if(this->hp<0){
+    this->hp=0;
+}
+
 }
 //Functions
 const bool Player::canAttack(){
