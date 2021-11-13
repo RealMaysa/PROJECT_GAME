@@ -14,10 +14,8 @@ this->enemysprite.setTexture(this->enemytexture);
 this->enemysprite.scale(2.f,2.f);
 
 }
-
 void Enemy::initVariables(){
-this->damage =0;
-this->speed=-1.f;
+this->speed=-1.7f;
 this->hp=0;
 this->hpMax=10;
 this->points=100;
@@ -25,6 +23,7 @@ this->damage=10;
 
 
 }
+
 Enemy::Enemy(float dirX,float dirY)
 {   this->initTexture();
     this->initEnemySprite();
@@ -61,6 +60,7 @@ void Enemy::update(){
 this->enemysprite.move(this->speed,0.f);
 
 }
+
 void Enemy::render(sf::RenderTarget *target){
     target->draw(this->enemysprite);
 
