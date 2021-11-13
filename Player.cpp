@@ -1,11 +1,13 @@
 #include"Player.h"
 void Player::initVariables(){
-this->movementSpeed=1.f;
+this->movementSpeed=2.f;
 this->attackCooldownMax=10.f;
 this->attackCooldown=this->attackCooldownMax;
 this->hpMax=100;
 this->hp=this->hpMax;
-
+this->level=1;
+this->FlexpNext=10;
+this->Flexp=0;
 }
 void Player::initTexture(){
 
@@ -61,6 +63,20 @@ const int &Player::getHpMax() const{
 return this->hpMax;
 
 }
+
+const int &Player::getFlexp() const{
+
+   return this->Flexp;
+}
+const int &Player::getFlexpMax() const{
+
+    return this->FlexpNext;
+}
+const int &Player::getLevel() const{
+
+return this->level;
+
+}
 //MOdifier
 void Player::setPosition(sf::Vector2f pos){
 
@@ -86,7 +102,34 @@ if(this->hp<0){
 }
 
 }
+void Player::gainHp(int value){
+
+this->hp+=value;//set ทุกอย่างที่เข้ามาในนี้ให้เพิ่มHp
+
+
+}
+void Player::gainFlexp(int exp){
+
+this->Flexp+=exp;//set ทุกอย่างที่เข้ามาในนี้ให้ลบHp
+this->UpdateLeveling();
+ 
+    if(this->Flexp>=10){
+    this->Flexp=0;
+             }
+}
+
 //Functions
+void Player::UpdateLeveling(){
+ if(this->Flexp>=this->FlexpNext)
+ {
+     this->level++;
+     this->Flexp-=this->FlexpNext;
+     
+ }
+
+
+
+}
 const bool Player::canAttack(){
 
 if(this->attackCooldown>=this->attackCooldownMax){
