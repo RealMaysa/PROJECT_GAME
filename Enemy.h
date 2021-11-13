@@ -8,6 +8,8 @@ class Enemy
 private:
   sf::Sprite enemysprite;
   sf::Texture enemytexture;
+  sf::Sprite enemyWsprite;
+  sf::Texture enemyWtexture;
   float movementSpeed;
     int type;
     int speed;
