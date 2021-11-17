@@ -6,11 +6,10 @@ void Game::initWindow(){
 //ปรับความกว้างความยาวของวินโดว์
 this->videoMode.height=1200;
 this->videoMode.width=1600;
-
 this->window=new sf::RenderWindow(this->videoMode, "RED RIDING SHOOT",sf::Style::Titlebar | sf::Style::Close);
 this->window->setFramerateLimit(144);
 this->window->setVerticalSyncEnabled(false);
- 
+ srand( time( NULL ) );
 }
 /*void Game::initState(){
 
@@ -20,6 +19,9 @@ void Game::initTextures(){
 //Add 
  this->textures["BULLET"]= new sf::Texture();
  this->textures["BULLET"]->loadFromFile("texture/bullet.png");
+ this->textures_2["BOSSBULL"]=new sf::Texture();
+ this->textures_2["BOSSBULL"]->loadFromFile("texture/bullet.png");
+
 }
 
 void Game::initGUI(){
@@ -89,7 +91,7 @@ void Game::initTextBox(){
   this->TextboxText.setPosition(200,200);*/
   this->nameplayer.setFont(this->font);
   this->nameplayer.setPosition(800.f,200.f);
-  this->nameplayer.setFillColor(sf::Color::White);
+  this->nameplayer.setFillColor(sf::Color::Black);
   this->nameplayer.setCharacterSize(100);
   this->CooldownMax=15.f;
   this->Cooldown=this->CooldownMax;
@@ -99,15 +101,25 @@ void Game::initPlayer(){
 	this->player=new Player();
  
 }
+void Game::initEnemies_3(){ 
+  this->countE_3=0;
+  this->CooldowndamageMAx_2=50.f;//จะให้หน่วงspawnศัตรูเร็วแค่ไหน
+  this->Cooldowndamage_3=this->CooldowndamageMAx_2;
+  
+}
 void Game::initEnemies(){
 
 this->spawnTimerMax=50.f;//จะให้spawnศัตรูเร็วแค่ไหน
-this->spawnTimer=this->spawnTimerMax;
+//this->spawnTimer=this->spawnTimerMax;
 }
 void Game::initEnemies_2(){
-
+//this->enemy_2=new Enemy_2();
 this->spawnTimerMax_2=50.f;//จะให้spawnศัตรูเร็วแค่ไหน
 this->spawnTimer_2=this->spawnTimerMax_2;
+this->countEMAX_2=5.f;
+this->countE_2=0;
+this->CooldowndamageMAx=50.f;//จะให้หน่วงspawnศัตรูเร็วแค่ไหน
+this->Cooldowndamage_2=this->CooldowndamageMAx;
 }
 void Game::initFlower(){
 this->dropTimerMax_1=50.f;//จะให้หน่วงspawnศัตรูเร็วแค่ไหน
@@ -124,7 +136,6 @@ this->countFl_2=0;//จำนวนเริ่มต้น
   }
 void Game::initFlower_3(){
 
-
 this->dropTimerMax_3=50.f;//จะให้หน่วงspawnศัตรูเร็วแค่ไหน
 this->dropTimer_3=this->dropTimerMax_3;
 this->countFlMax_3=10.f;//จำนวนสิ้นสุด
@@ -132,7 +143,7 @@ this->countFl_3=0;//จำนวนเริ่มต้น
 }
 void Game::initClover(){
 
-this->dropTimerMax=1000.f;//จะให้spawnศัตรูเร็วแค่ไหน
+this->dropTimerMax=600.f;
 this->dropTimer=this->dropTimerMax;
 this->countClMax=rand()%10;
 this->countCl=0;
@@ -141,6 +152,10 @@ void Game::initWorld(){
 this->worldbackgroundTex.loadFromFile("texture/Forest.jpg");
 this->worldbackground.setTexture(this->worldbackgroundTex);
 
+}
+void Game::initTheEnd(){
+this->TheEndBG.loadFromFile("texture/END.png");
+this->TheEndBGsprite.setTexture(this->TheEndBG);
 }
 void Game::initMainmenu(){
 this->MainmenubackgroundTex.loadFromFile("texture/MainMenuBG.png");
@@ -172,14 +187,16 @@ this->buttonExitsprite.scale(1.f,1.f);
 void Game::initSystems(){
 
 this->point=0;
-
+this->CooldowndamageMAx=50.f;//จะให้หน่วงspawnศัตรูเร็วแค่ไหน
+this->Cooldowndamage_2=this->CooldowndamageMAx;
+float Cooldowndamage_3=this->CooldowndamageMAx;
 
 }
 void Game::initHighScore(float x,float y,string word)
 {  sf::Text text;
    text.setFont(this->font);
-   text.setCharacterSize(32);
-   text.setFillColor(sf::Color::White);
+   text.setCharacterSize(100);
+   text.setFillColor(sf::Color::Black);
    text.setPosition(x,y);
    text.setString(word);
    this->window->draw(text);
@@ -193,18 +210,13 @@ if(this->Cooldown>=this->CooldownMax){
 
     return false;
 }
-const bool Game::canText_2(){
-  if(this->Cooldown_2>=this->CooldownMax_2){
-   this->CooldownMax_2=0.f;
-   return true;
-}
-return false;
-}
+
 //ตัวที่สร้างและทำลาย
 Game::Game()
 {
 this->initWindow();
 this->initMainmenu();
+this->initTheEnd();
 this->initPlayer();
 this->initTextures();
 this->initGUI();
@@ -212,6 +224,7 @@ this->initSystems();
 this->initWorld();
 this->initEnemies();
 this->initEnemies_2();
+this->initEnemies_3();
 this->initClover();
 this->initFlower();
 this->initFlower_2();
@@ -223,7 +236,6 @@ this->initButtonEX();
 this->initTextBox();
 this->initTextBoxBG();
 this->canText();
-this->canText_2();
 }
 
 Game::~Game()
@@ -251,10 +263,17 @@ for(auto *i : this-> enemies){
 
 	delete i;
 }
+
 for(auto *i : this-> enemies_2){
 
 	delete i;
 }
+for(auto *i : this-> enemies_3){
+
+	delete i;
+}
+
+
 
 }
 
@@ -273,6 +292,7 @@ void Game::run(){
                     if(this->ev.text.unicode=='\b'){
                        if(yourname.getSize()>=1){
                         this->yourname.erase(this->yourname.getSize()-1,1);
+                        this->nameJa.erase(this->nameJa.size()-1,1);
                         this->nameplayer.setString(this->yourname);
                         num--;
                           
@@ -284,6 +304,7 @@ void Game::run(){
                         
                         this->yourname+=static_cast<char>(this->ev.text.unicode);
                         this->name+=static_cast<char>(this->ev.text.unicode);
+                        this->nameJa+=static_cast<char>(this->ev.text.unicode);
                         num++;
                       }
                       if(this->ev.text.unicode<128){
@@ -295,7 +316,7 @@ void Game::run(){
                       }
                       this->nameplayer.setCharacterSize(90);
                       this->nameplayer.setPosition(600.f,300.f);
-                      this->nameplayer.setFillColor(sf::Color::White);
+                      this->nameplayer.setFillColor(sf::Color::Black);
                       }
                   else if(ev.type==sf::Event::KeyPressed){
                    if(ev.key.code==sf::Keyboard::Return){
@@ -308,11 +329,11 @@ void Game::run(){
                   this->updateText(); 
                   this->window->display();
                   
-                   
                         
                   }
               if((sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))){
-                    //this->nameJa=this->yourname;
+                    this->totalname=&this->nameJa[0];
+                    cout<<this->totalname<<endl;
                     NameState=true;
                   
               }   
@@ -320,7 +341,38 @@ void Game::run(){
                   
                   this->update();
                   this->render();
-                 
+                  while(this->player->getLevel()==4){
+                            this->pollEvents();
+                            this->window->clear();
+                            this->window->draw(this->TheEndBGsprite);
+                            this->window->draw(this->buttonExitsprite);
+                            if(this->buttonExitsprite.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                            {  this->fp = fopen("rescource/Highscore.txt", "r");
+	                                    for (int i = 0; i < 5; i++)
+	                                    {
+		                                      fscanf(fp, "%s", &temp);
+		                                        name_one[i] = temp;
+		                                      fscanf(fp,"%d",&savscore[i]);
+		                                        user_score.push_back(make_pair(savscore[i], name_one[i]));
+		                               
+	                                      }
+                                  name_one[5]=this->totalname;
+                                    savscore[5] = this->point;      
+	                              user_score.push_back(make_pair(savscore[5], name_one[5]));
+                                sort(user_score.begin(),user_score.end());
+	                                  fclose(fp);
+	                                  fopen("rescource/Highscore.txt", "w");
+	                                    for (int i = 5; i >= 1; i--)
+	                                  {
+		                                    strcpy(temp, user_score[i].second.c_str());//แปลงstringให้กลายเป็นchar
+		                                        fprintf(fp,"%s %d\n",temp,user_score[i].first);
+	                    
+                                        }
+	                                        fclose(fp);
+                                            this->window->close();
+                                }
+                         this->window->display();
+                    }
                 }
                 while(this->player->getHp()<=0){
                 this->pollEvents();
@@ -328,25 +380,7 @@ void Game::run(){
                 this->window->draw(this->worldbackground);
                 this->window->draw(this->gameOverText);
                 this->window->draw(this->buttonExitsprite);
-                
-                
-                //std::
-                /*this->myfile.open("rescource/Highscore.txt");
-                if(this->myfile.is_open()){
-                  while(!this->myfile.eof()){
-                     this->myfile>>this->high_score;
-                  }
-                }
-                this->myfile.close();
-                this->myfile2.open("rescource/Highscore.txt");
-                if(this->myfile2.is_open()){
-                  if(this->point>this->high_score){
-                     this->high_score=this->point;
-                  }
-                  this->myfile2<<this->high_score;
-                  //<<"\n"<<this->nameJa
-                }
-                this->myfile2.close();*/
+              
                 if(this->buttonExitsprite.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 {  this->fp = fopen("rescource/Highscore.txt", "r");
 	                 for (int i = 0; i < 5; i++)
@@ -357,11 +391,11 @@ void Game::run(){
 		                    user_score.push_back(make_pair(savscore[i], name_one[i]));
 		                    //cout << temp << " " << score;
 	                 }
-	                  name_one[5] = "MMAED";
-	                  savscore[5] = 8900;
-	                  user_score.push_back(make_pair(savscore[5], name_one[5]));
-	                  sort(user_score.begin(),user_score.end());
-	                fclose(fp);
+                   name_one[5]=this->totalname;
+                   savscore[5] = this->point;      
+	                 user_score.push_back(make_pair(savscore[5], name_one[5]));
+                   sort(user_score.begin(),user_score.end());
+	                 fclose(fp);
 	                fopen("rescource/Highscore.txt", "w");
 	                for (int i = 5; i >= 1; i--)
 	                  {
@@ -370,12 +404,9 @@ void Game::run(){
 	                    
                     }
 	                    fclose(fp);
-                      
-                    this->window->close();
-                    
-                }
+                      this->window->close();
+                     }
                 this->window->display();
-          
                  }
                  StartGame=true;
                  }
@@ -407,8 +438,10 @@ void Game::run(){
 		                    //cout << temp << "              " << savscore[i]<<endl;
 	                 }
                    fclose(fp);
-                   this->initHighScore(600.f,200.f,user_score[0].second);
-		               this->initHighScore(600.f, 230.f, to_string(user_score[0].first));
+                   for(int i=0;i<5;i++){
+                   this->initHighScore(450.f,200.f+(100.f*(i+1.f)),user_score[i].second);
+		               this->initHighScore(900.f, 200.f+(100.f*(i+1.f)), to_string(user_score[i].first));
+                   }
                     this->window->display();
                    }                
                     LDBGame=true;
@@ -494,10 +527,9 @@ this->bullets.erase(this->bullets.begin()+counter);
   }
   ++counter;
 }
-
+      
       }
-
-
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 void Game::updateCollision(){
   //เช็คชนกรอบ
    //Left 
@@ -526,18 +558,20 @@ void Game::updateEnemies(){
   //spawning
 
  this->spawnTimer+=0.6f;
- if(this->player->getLevel()==2){
-   this->spawnTimer=0.f;
- }
- if(this->spawnTimer>=this->spawnTimerMax){                //x             //y
-      this->enemies.push_back(new Enemy(1200+rand()%1400,rand()%1000));//บริเวณนี้จะมีการspawnเกิดขึ้น
+ if(this->spawnTimer>=this->spawnTimerMax){
+      if(this->player->getLevel()==3){
+      this->enemies.push_back(new Enemy(1200+rand()%1400,rand()%200));//บริเวณนี้จะมีการspawnเกิดขึ้น
       this->spawnTimer=0.f;
+
+      }          //x             //y
+      else{this->enemies.push_back(new Enemy(1200+rand()%1400,rand()%1000));//บริเวณนี้จะมีการspawnเกิดขึ้น
+      this->spawnTimer=0.f;}
       
  }  
  //update
  unsigned counter=0;
 for(auto*enemy : this->enemies)
-{
+{ 
   enemy->update();
   //checkenemyว่าชนขอบมั้ย
   if(enemy->getBounds().left<0.f){ 
@@ -561,14 +595,17 @@ delete this->enemies.at(counter);
 
     } 
 
+
+
 void Game::updateEnemies_2(){
     if(this->player->getLevel()==2){
     this->spawnTimer_2+=0.6f;
- if(this->spawnTimer_2>=this->spawnTimerMax_2){                //x             //y
-      this->enemies_2.push_back(new Enemy_2(1200,1000));//บริเวณนี้จะมีการspawnเกิดขึ้น
+    if(this->spawnTimer_2>=this->spawnTimerMax_2&& this->countE_2<this->countEMAX_2){  
+      this->enemies_2.push_back(new Enemy_2(1200+rand()%1400,rand()%1000));
+         //บริเวณนี้จะมีการspawnเกิดขึ้น
       this->spawnTimer_2=0.f;
-      
- }  
+      this->countE_2+=1.f;
+   }   
  //update
  unsigned counter_2=0;
  for(auto*enemy_2 : this->enemies_2)
@@ -578,27 +615,83 @@ void Game::updateEnemies_2(){
   if(enemy_2->getBounds().left<0.f){ 
   //Delete enemy
  this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
+ delete this->enemies_2.at(counter_2);
  this->enemies_2.erase(this->enemies_2.begin()+counter_2);
+
 --counter_2;
   }
   //Player Enemy Collision
-else if( enemy_2->getBounds().intersects(this->player->getBounds())){
-this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
- this->enemies_2.erase(this->enemies_2.begin()+counter_2);
---counter_2;
+ else if(enemy_2->getBounds().intersects(this->player->getBounds())){
+    if(this->enemies_2.at(counter_2)->getHp()==0){
+    this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
+     delete this->enemies_2.at(counter_2);
+     this->enemies_2.erase(this->enemies_2.begin()+counter_2);
+     --counter_2;
+     
+          }
 
-  }
-  ++counter_2;   
+     else if(this->enemies_2.at(counter_2)->getHp()>0){
+       this->Cooldowndamage_2+=1.f;
+       if(this->Cooldowndamage_2>=this->CooldowndamageMAx){
+       this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
+       this->Cooldowndamage_2=0.f;
+      }
+      --counter_2;
+     }
+  } 
+  ++counter_2;  
  
-
-
-
-
-
    }
 
     }
+
        }
+
+
+
+
+
+ void Game::updateEnemies_3(){
+    if(this->player->getLevel()==3){
+    if(this->countE_3==0){  
+      this->enemies_3.push_back(new Enemy_3(1000,100));
+      //บริเวณนี้จะมีการspawnเกิดขึ้น
+      this->countE_3+=1.f;
+         }   
+ //update
+ unsigned counter=0;
+ for(auto*enemy_3 : this->enemies_3)
+{
+  enemy_3->update();
+  //Player Enemy Collision
+  /*if(enemy_3->getBounds().left<0.f){ 
+  //Delete enemy
+ this->player->loseHp(this->enemies_3.at(counter)->getDamage());
+ delete this->enemies_3.at(counter);
+ this->enemies_3.erase(this->enemies_3.begin()+counter);
+
+--counter;
+  }*/
+if(enemy_3->getBounds().intersects(this->player->getBounds())){
+        if(this->enemies_3.at(counter)->getHp()==0){
+       this->player->loseHp(this->enemies_3.at(counter)->getDamage());
+       delete this->enemies_3.at(counter);
+      this->enemies_3.erase(this->enemies_3.begin()+counter);
+       --counter;
+     }
+else if(this->enemies_3.at(counter)->getHp()>0){
+     this->Cooldowndamage_3+=1.f;
+     if(this->Cooldowndamage_3>=this->CooldowndamageMAx_2){
+      this->player->loseHp(this->enemy_3->getDamage());
+      this->Cooldowndamage_3=0.f;
+      }
+     --counter;
+       }
+    }
+++counter;
+       }
+ }
+ }
 /*---------------------------------------------------COMBAT---------------------------------------------------------------*/
 void Game::updateCombat(){
 for(int i=0;i<this->enemies.size();++i)
@@ -619,6 +712,59 @@ for (size_t k= 0; k < this->bullets.size()&& enemy_deleted==false; k++)
 
 
 }
+for(int i=0;i<this->enemies_2.size();++i)
+{  bool enemy_deleted_2=false;
+for (size_t k= 0; k < this->bullets.size()&& enemy_deleted_2==false; k++)
+{     
+  if(this->enemies_2[i]->getBounds().intersects(this->bullets[k]->getBounds())){
+      
+    if(this->enemies_2[i]->getHp()>0){
+      this->enemies_2[i]->loseHp(10);
+      delete this->bullets[k];
+      this->bullets.erase(this->bullets.begin()+k);
+     }
+     else if(this->enemies_2[i]->getHp()<=0){
+        delete this->bullets[k];
+        this->bullets.erase(this->bullets.begin()+k);
+        this->point+=this->enemies_2[i]->getPoints();
+        delete this->enemies_2[i];
+        this->enemies_2.erase(this->enemies_2.begin()+i);
+        } 
+       enemy_deleted_2=true;
+       }
+   }  
+}  
+
+for(int i=0;i<this->enemies_3.size();++i)
+{  bool enemy_deleted=false;
+for (size_t k= 0; k < this->bullets.size()&& enemy_deleted==false; k++)
+{     
+  if(this->enemies_3[i]->getBounds().intersects(this->bullets[k]->getBounds())){
+      
+    if(this->enemies_3[i]->getHp()>0){
+      this->enemies_3[i]->loseHp(10);
+      cout<<this->enemies_3[i]->getHp()<<endl;
+      delete this->bullets[k];
+      this->bullets.erase(this->bullets.begin()+k); 
+     }
+     else if(this->enemies_3[i]->getHp()<=0){
+        delete this->bullets[k];
+        this->bullets.erase(this->bullets.begin()+k);
+        this->point+=this->enemies_3[i]->getPoints();
+        delete this->enemies_3[i];
+        this->enemies_3.erase(this->enemies_3.begin()+i);
+       
+        } 
+      
+      enemy_deleted=true;
+       
+  }
+
+}
+
+
+
+ }
 
 }
 /*---------------------------------------------------FLOWER---------------------------------------------------------------*/
@@ -698,7 +844,7 @@ delete this->flowers_3.at(counter_3);
   }
 /*--------------------------------------------------Clover-----------------------------------------------------------------------*/
 void Game::updateClover(){
- this->dropTimer+=1.f;
+ this->dropTimer+=0.2f;
  if(this->dropTimer>=this->dropTimerMax && this->countCl<this->countClMax){                //x             //y
       this->clovers.push_back(new Clover(rand()%1400,rand()%1000));//บริเวณนี้จะมีการspawnเกิดขึ้น
       this->dropTimer=0.f;
@@ -722,12 +868,6 @@ if(this->Cooldown < this->CooldownMax){
     }
 
 }
-void Game::updateText_2(){
-if(this->Cooldown_2 < this->CooldownMax_2){
-    this->Cooldown_2+=0.5f;//เพิ่มคูลดาวน์ทีละ0.5
-    }
-
-}
 /*---------------------------------------------------UPDATE---------------------------------------------------------------*/
 void Game::update(){
 //update game logic การmove keyboard inputต่างๆ
@@ -738,6 +878,7 @@ this->updateCollision();
 this->updateBullets();
 this->updateEnemies();
 this->updateEnemies_2();
+this->updateEnemies_3();
 this->updateCombat();
 this->updateFlower();
 this->updateFlower_2();
@@ -806,11 +947,6 @@ void Game::render(){
 //draw World
 this->window->clear();
 this->renderWorld();
-//this->menu->draw(window);
-/*if(!this->states.empty()){
-
-  this->states.top()->render(this->window);
-}*/
 //Draw game objects//ให้ทุกอย่างrenderไปยังหน้าจอ โดยจะเรนเดอร์เป็นลำดับจากบนไปล่างทับกันไปเรื่อยๆ ล่างสุดจะอยู่ด้านหน้าสุด
 this->player->render(*this->window);
 
@@ -844,12 +980,16 @@ for(auto *enemy_2 : this->enemies_2)
 enemy_2->render(this->window);
 
 }
+for(auto *enemy_3 : this->enemies_3)
+{
+enemy_3->render(this->window);
+
+}
 for(auto *bullet : this->bullets)
 {
   bullet->render(this->window);
 
 }
-
  this->renderGUI();
 this->window->display();
 
@@ -887,48 +1027,4 @@ this->window->draw(this->TBbackground);
 
 
 }
-void::Game::renderHighscore(){
-//this->window->draw(this->text);
 
-}
-
-/*void Game::rendername(){
-                 
-                  this->window->clear(); 
-                  this->pollEvents();
-                  if(this->ev.type==sf::Event::TextEntered){
-                    if(this->ev.text.unicode=='\b'){
-                       if(yourname.getSize()>=1){
-                        this->yourname.erase(this->yourname.getSize()-1,1);
-                        this->nameplayer.setString(this->yourname);
-                        num--;
-                         
-                       }
-
-                    }
-                    else{
-                      sf::String name;
-                      if(this->yourname.getSize()<15){
-                        this->yourname+=static_cast<char>(this->ev.text.unicode);
-                        name+=static_cast<char>(this->ev.text.unicode);
-                        num++;
-                      }
-                      else if(this->ev.text.unicode<128){
-                        this->nameplayer.setString(this->yourname);
-
-                      }
-                      
-                      }
-                      this->nameplayer.setCharacterSize(90);
-                      this->nameplayer.setPosition(600.f,300.f);
-                  }
-                  else if(this->ev.type==sf::Event::KeyPressed){
-                    if(this->ev.key.code==sf::Keyboard::Return){
-                      this->nameplayer.setString(this->yourname);
-                    }
-                  }
-                  this->renderTextBox();
-                  this->window->draw(this->nameplayer);
-                  this->window->display();
-                 
-}*/
