@@ -15,7 +15,6 @@ this->direction.x= dir_x;
 this->direction.y= dir_y;
 this->movementSpeed = movement_speed;
 this->shape.scale(4.f,4.f);
-
 }
 
 
