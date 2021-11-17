@@ -15,7 +15,6 @@ public:
     virtual ~Bullet();
 //Accessor
 const sf::FloatRect getBounds() const;//ระบุตำแหน่งของกระสุน
-
     void update();
     void render(sf::RenderTarget*target);
 };
