@@ -20,7 +20,7 @@ this->speed=-1.4f;
 this->hpMax=50;
 this->hp=this->hpMax;
 this->points=300;
-this->damage=10;
+this->damage=20;
 
 
 }
