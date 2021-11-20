@@ -16,7 +16,7 @@ this->enemyWsprite.scale(2.f,2.f);
 
 }
 void Enemy_3::initVariables(){
-this->speed=-0.f;
+this->speed=0;
 this->hpMax=1000;
 this->hp=this->hpMax;
 this->points=5000;
