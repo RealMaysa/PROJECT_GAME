@@ -1,6 +1,4 @@
 #include"Game.h"
-#include"mainMenu.h"
-#include"TextBox.h"
 using namespace std;
 void Game::initWindow(){
 //ปรับความกว้างความยาวของวินโดว์
@@ -10,11 +8,10 @@ this->window=new sf::RenderWindow(this->videoMode, "RED RIDING SHOOT",sf::Style:
 this->window->setFramerateLimit(144);
 this->window->setVerticalSyncEnabled(false);
  srand( time( NULL ) );
+   
+    
 }
-/*void Game::initState(){
 
-this->states.push(new GameState(this->window));
-}*/
 void Game::initTextures(){
 //Add 
  this->textures["BULLET"]= new sf::Texture();
@@ -23,7 +20,18 @@ void Game::initTextures(){
  this->textures_2["BOSSBULL"]->loadFromFile("texture/bullet.png");
 
 }
+void Game::initMusic(){
 
+
+this->mainmenu_1.loadFromFile("Music/SoundGF01.wav");
+this->SoundGF.setBuffer(this->mainmenu_1);
+this->SoundGF.setVolume(50);
+this->SoundGF.play();
+this->SoundGF.setLoop(true);    
+    
+
+   
+}
 void Game::initGUI(){
 
  //Load Font
@@ -86,9 +94,6 @@ this->LeaderBoardText.setString("LEADERBOARD");
 }
 void Game::initTextBox(){
 
-  /*TextBox TextboxText(15,sf::Color::White,false);
-  this->TextboxText.setFont(this->font);
-  this->TextboxText.setPosition(200,200);*/
   this->nameplayer.setFont(this->font);
   this->nameplayer.setPosition(800.f,200.f);
   this->nameplayer.setFillColor(sf::Color::Black);
@@ -110,10 +115,9 @@ void Game::initEnemies_3(){
 void Game::initEnemies(){
 
 this->spawnTimerMax=50.f;//จะให้spawnศัตรูเร็วแค่ไหน
-//this->spawnTimer=this->spawnTimerMax;
+
 }
 void Game::initEnemies_2(){
-//this->enemy_2=new Enemy_2();
 this->spawnTimerMax_2=50.f;//จะให้spawnศัตรูเร็วแค่ไหน
 this->spawnTimer_2=this->spawnTimerMax_2;
 this->countEMAX_2=5.f;
@@ -143,7 +147,7 @@ this->countFl_3=0;//จำนวนเริ่มต้น
 }
 void Game::initClover(){
 
-this->dropTimerMax=600.f;
+this->dropTimerMax=300.f;
 this->dropTimer=this->dropTimerMax;
 this->countClMax=rand()%10;
 this->countCl=0;
@@ -215,6 +219,7 @@ if(this->Cooldown>=this->CooldownMax){
 Game::Game()
 {
 this->initWindow();
+this->initMusic();
 this->initMainmenu();
 this->initTheEnd();
 this->initPlayer();
@@ -281,8 +286,11 @@ for(auto *i : this-> enemies_3){
 void Game::run(){
     while(this->window->isOpen())
     {  this->pollEvents();
+          
+       //this->SoundGF.play();
        if(StartGame==false||ExitGame==false||LDBGame==false){
-          this->renderMainmenu();
+
+          this->renderMainmenu();   
           if(this->StartText.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
           {      
                 while(!(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))){
@@ -488,7 +496,7 @@ if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))
  this->player->move(0.f,2.f);
 
-//&& this->player->canAttack()
+
 if(sf::Keyboard::isKeyPressed(sf::Keyboard::R)&&this->player->canAttack()){
                                                                                                               //x //y //speed
 this->bullets.push_back(new Bullet(this->textures["BULLET"],this->player->getPos().x,this->player->getPos().y,1.f,0.f,5.f));//สร้างกระสุนตำแหน่งเดียวกับผู้เล่น
@@ -557,10 +565,15 @@ void Game::updateCollision(){
 void Game::updateEnemies(){
   //spawning
 
- this->spawnTimer+=0.6f;
+ 
+ if(this->player->getLevel()==3){
+  this->spawnTimer+=0.2f;
+
+ }
+ else{this->spawnTimer+=0.6f;}
  if(this->spawnTimer>=this->spawnTimerMax){
       if(this->player->getLevel()==3){
-      this->enemies.push_back(new Enemy(1200+rand()%1400,rand()%200));//บริเวณนี้จะมีการspawnเกิดขึ้น
+      this->enemies.push_back(new Enemy(1200+rand()%1400,200+rand()%430));//บริเวณนี้จะมีการspawnเกิดขึ้น
       this->spawnTimer=0.f;
 
       }          //x             //y
@@ -596,7 +609,7 @@ delete this->enemies.at(counter);
     } 
 
 
-
+//---------------------------------------------------------"ENEMY2"----------------------------------------------------------------------------
 void Game::updateEnemies_2(){
     if(this->player->getLevel()==2){
     this->spawnTimer_2+=0.6f;
@@ -644,11 +657,60 @@ void Game::updateEnemies_2(){
    }
 
     }
+if(this->player->getLevel()==3){
+  if(this->BossisDead==true){
+    this->spawnTimer_2=0;
+  }
+    this->spawnTimer_2+=0.1f;
+    if(this->spawnTimer_2>=this->spawnTimerMax_2){  
+      this->enemies_2.push_back(new Enemy_2(1200,820));
+         //บริเวณนี้จะมีการspawnเกิดขึ้น
+      this->spawnTimer_2=0.f;
+      
+   }   
+ //update
+ unsigned counter_2=0;
+ for(auto*enemy_2 : this->enemies_2)
+{
+  enemy_2->update();
+  //checkenemyว่าชนขอบมั้ย
+  if(enemy_2->getBounds().left<0.f){ 
+  //Delete enemy
+ this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
+ delete this->enemies_2.at(counter_2);
+ this->enemies_2.erase(this->enemies_2.begin()+counter_2);
+
+--counter_2;
+  }
+  //Player Enemy Collision
+ else if(enemy_2->getBounds().intersects(this->player->getBounds())){
+    if(this->enemies_2.at(counter_2)->getHp()==0){
+    this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
+     delete this->enemies_2.at(counter_2);
+     this->enemies_2.erase(this->enemies_2.begin()+counter_2);
+     --counter_2;
+     
+          }
+
+     else if(this->enemies_2.at(counter_2)->getHp()>0){
+       this->Cooldowndamage_2+=1.f;
+       if(this->Cooldowndamage_2>=this->CooldowndamageMAx){
+       this->player->loseHp(this->enemies_2.at(counter_2)->getDamage());
+       this->Cooldowndamage_2=0.f;
+      }
+      --counter_2;
+     }
+  } 
+  ++counter_2;  
+ 
+   }
+
+    }
 
        }
 
 
-
+//---------------------------------------------------------"ENEMY3"----------------------------------------------------------------------------
 
 
  void Game::updateEnemies_3(){
@@ -663,32 +725,25 @@ void Game::updateEnemies_2(){
  for(auto*enemy_3 : this->enemies_3)
 {
   enemy_3->update();
-  //Player Enemy Collision
-  /*if(enemy_3->getBounds().left<0.f){ 
-  //Delete enemy
- this->player->loseHp(this->enemies_3.at(counter)->getDamage());
- delete this->enemies_3.at(counter);
- this->enemies_3.erase(this->enemies_3.begin()+counter);
-
---counter;
-  }*/
 if(enemy_3->getBounds().intersects(this->player->getBounds())){
-        if(this->enemies_3.at(counter)->getHp()==0){
-       this->player->loseHp(this->enemies_3.at(counter)->getDamage());
+      if(this->enemies_3.at(counter)->getHp()==0){
+          
        delete this->enemies_3.at(counter);
       this->enemies_3.erase(this->enemies_3.begin()+counter);
-       --counter;
+      --counter;  
      }
-else if(this->enemies_3.at(counter)->getHp()>0){
+    if(this->enemies_3.at(counter)->getHp()>0){
      this->Cooldowndamage_3+=1.f;
      if(this->Cooldowndamage_3>=this->CooldowndamageMAx_2){
-      this->player->loseHp(this->enemy_3->getDamage());
+      this->player->loseHp(this->enemies_3.at(counter)->getDamage());
       this->Cooldowndamage_3=0.f;
+     
       }
      --counter;
        }
+
     }
-++counter;
+ ++counter;
        }
  }
  }
@@ -753,7 +808,7 @@ for (size_t k= 0; k < this->bullets.size()&& enemy_deleted==false; k++)
         this->point+=this->enemies_3[i]->getPoints();
         delete this->enemies_3[i];
         this->enemies_3.erase(this->enemies_3.begin()+i);
-       
+        this->BossisDead=true;
         } 
       
       enemy_deleted=true;
@@ -818,7 +873,7 @@ delete this->flowers_2.at(counter_2);
    }
   }
 void Game::updateFlower_3(){
-  if(this->player->getLevel()==3){
+  if(this->player->getLevel()==3&&this->BossisDead==true){
     this->dropTimer_3+=1.f;
  if(this->dropTimer_3>=this->dropTimerMax_3 && this->countFl_3<this->countFlMax_3){                //x             //y
       this->flowers_3.push_back(new Flower_3(rand()%1400,rand()%1000));//บริเวณนี้จะมีการspawnเกิดขึ้น
@@ -970,21 +1025,22 @@ for(auto *clover : this->clovers)
 clover->render(this->window);
 
 }
+
 for(auto *enemy : this->enemies)
 {
 enemy->render(this->window);
 
+}
+for(auto *enemy_3 : this->enemies_3)
+{
+enemy_3->render(this->window);
 }
 for(auto *enemy_2 : this->enemies_2)
 {
 enemy_2->render(this->window);
 
 }
-for(auto *enemy_3 : this->enemies_3)
-{
-enemy_3->render(this->window);
 
-}
 for(auto *bullet : this->bullets)
 {
   bullet->render(this->window);
