@@ -19,12 +19,8 @@
 #include"Flower_2.h"
 #include"Flower_3.h"
 #include"Clover.h"
-#include"TextBox.h"
-#include"Bullet_2.h"
 #include"Enemy_3.h"
-//#include"State.h"
-//#include"GameState.h"
-//#include"mainMenu.h"
+
 /* ทำตัวเหมือนแก่นทำงานหลักของเกม game engine
     รวมคลาสไว้เข้าด้วยกัน */
 
@@ -45,12 +41,15 @@ sf::Sprite buttonRsprite;
 sf::Texture buttonRtexture;
 sf::Sprite buttonExitsprite;
 sf::Texture buttonExittexture;
+sf::SoundBuffer mainmenu_1;
+sf::Sound SoundGF;
 //UserName
 
 bool StartGame=false;
 bool ExitGame=false;
 bool LDBGame=false;
 bool NameState=false;
+bool BossisDead=false;
 //Window
 sf::RenderWindow* window;
 sf::Event ev;
@@ -157,6 +156,7 @@ char*totalname;
 std::vector<std::pair<int,std::string>> user_score;
 //privarte function
    void initWindow();
+   void initMusic();
    void initMainmenu();
    void initBulletSprite();
    void initTextures();
