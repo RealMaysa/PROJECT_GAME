@@ -2,14 +2,11 @@
 using namespace std;
 void Game::initWindow(){
 //ปรับความกว้างความยาวของวินโดว์
-this->videoMode.height=1200;
-this->videoMode.width=1600;
-this->window=new sf::RenderWindow(this->videoMode, "RED RIDING SHOOT",sf::Style::Titlebar | sf::Style::Close);
+this->window= new sf::RenderWindow(sf::VideoMode(1600,1200), "RED RIDING SHOOT",sf::Style::Titlebar | sf::Style::Close);
 this->window->setFramerateLimit(144);
-this->window->setVerticalSyncEnabled(false);
+this->window->setVerticalSyncEnabled(false); 
  srand( time( NULL ) );
-   
-    
+       
 }
 
 void Game::initTextures(){
@@ -341,7 +338,6 @@ void Game::run(){
                   }
               if((sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))){
                     this->totalname=&this->nameJa[0];
-                    cout<<this->totalname<<endl;
                     NameState=true;
                   
               }   
@@ -377,6 +373,7 @@ void Game::run(){
 	                    
                                         }
 	                                        fclose(fp);
+                                            this->SoundGF.stop();
                                             this->window->close();
                                 }
                          this->window->display();
@@ -397,7 +394,7 @@ void Game::run(){
 		                    name_one[i] = temp;
 		                    fscanf(fp,"%d",&savscore[i]);
 		                    user_score.push_back(make_pair(savscore[i], name_one[i]));
-		                    //cout << temp << " " << score;
+		                 
 	                 }
                    name_one[5]=this->totalname;
                    savscore[5] = this->point;      
@@ -412,6 +409,7 @@ void Game::run(){
 	                    
                     }
 	                    fclose(fp);
+                      this->SoundGF.stop();
                       this->window->close();
                      }
                 this->window->display();
@@ -443,7 +441,7 @@ void Game::run(){
 		                    name_one[i] = temp;
 		                    fscanf(fp,"%d",&savscore[i]);
 		                    user_score.push_back(make_pair(savscore[i], name_one[i]));
-		                    //cout << temp << "              " << savscore[i]<<endl;
+		                  
 	                 }
                    fclose(fp);
                    for(int i=0;i<5;i++){
@@ -463,7 +461,6 @@ void Game::run(){
    
                      
           
-    
 
 
 void Game::pollEvents(){         //ตอนนี้เราสร้างตัวแปรevของตัวเองแล้ว ที่จะติดตามทุกๆอย่าง
@@ -471,13 +468,16 @@ while(this->window->pollEvent(this->ev)){ //ตราบใดที่มีก
                switch (this->ev.type) //ในแต่ละevที่เกิดขึ้น จะมีการtypeเกิดขึ้น เป็นตัวแปรนึงในstructที่เช็คว่าผู้เล่นพิมอะไร
 			   {
 			   case sf::Event::Closed:
+            this->SoundGF.stop();     
 			      this->window->close();
 				   break;
 			   
 			   case sf::Event::KeyPressed:
 			     if(this->ev.key.code==sf::Keyboard::Escape)
-				 this->window->close();
-				   break;
+           { this->SoundGF.stop();        
+             this->window->close();
+				   break;}
+				 
 			   }
 
 
@@ -798,7 +798,6 @@ for (size_t k= 0; k < this->bullets.size()&& enemy_deleted==false; k++)
       
     if(this->enemies_3[i]->getHp()>0){
       this->enemies_3[i]->loseHp(10);
-      cout<<this->enemies_3[i]->getHp()<<endl;
       delete this->bullets[k];
       this->bullets.erase(this->bullets.begin()+k); 
      }
