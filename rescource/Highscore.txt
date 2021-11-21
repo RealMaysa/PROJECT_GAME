@@ -1,5 +1,5 @@
-sww 22700
-sdda 21900
-ddd 19300
-ddd 19100
-ddd 16800
+ice 16300
+dd 16300
+mak 15600
+ddwd 15600
+name 15000
