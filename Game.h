@@ -53,7 +53,6 @@ bool BossisDead=false;
 //Window
 sf::RenderWindow* window;
 sf::Event ev;
-sf::VideoMode videoMode ;
 //std::stack<State*> states;//ในstateสร้างobjectไม่ได้เลยต้องสร้างได้แค่pointerชี้ไปยังมันและสร้างstackเพื่อเพิ่มstateใหม่ขึ้น
 
 //Resource  //คอนเทนเนอร์class
