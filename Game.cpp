@@ -2,7 +2,7 @@
 using namespace std;
 void Game::initWindow(){
 //ปรับความกว้างความยาวของวินโดว์
-this->window= new sf::RenderWindow(sf::VideoMode(1600,1200), "RED RIDING SHOOT",sf::Style::Titlebar | sf::Style::Close);
+this->window= new sf::RenderWindow(sf::VideoMode(1600,1200),"RED RIDING SHOOT",sf::Style::Titlebar | sf::Style::Close );
 this->window->setFramerateLimit(144);
 this->window->setVerticalSyncEnabled(false); 
  srand( time( NULL ) );
@@ -288,7 +288,8 @@ void Game::run(){
        if(StartGame==false||ExitGame==false||LDBGame==false){
 
           this->renderMainmenu();   
-          if(this->StartText.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
+          if(this->StartText.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)
+          &&sf::Mouse::isButtonPressed(sf::Mouse::Left))
           {      
                 while(!(sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))){
                   this->window->clear(); 
@@ -339,54 +340,24 @@ void Game::run(){
               if((sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))){
                     this->totalname=&this->nameJa[0];
                     NameState=true;
-                  
+                    
               }   
                 while(this->player->getHp()>0&&NameState==true){
                   
                   this->update();
                   this->render();
-                  while(this->player->getLevel()==4){
-                            this->pollEvents();
-                            this->window->clear();
-                            this->window->draw(this->TheEndBGsprite);
-                            this->window->draw(this->buttonExitsprite);
-                            if(this->buttonExitsprite.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
-                            {  this->fp = fopen("rescource/Highscore.txt", "r");
-	                                    for (int i = 0; i < 5; i++)
-	                                    {
-		                                      fscanf(fp, "%s", &temp);
-		                                        name_one[i] = temp;
-		                                      fscanf(fp,"%d",&savscore[i]);
-		                                        user_score.push_back(make_pair(savscore[i], name_one[i]));
-		                               
-	                                      }
-                                  name_one[5]=this->totalname;
-                                    savscore[5] = this->point;      
-	                              user_score.push_back(make_pair(savscore[5], name_one[5]));
-                                sort(user_score.begin(),user_score.end());
-	                                  fclose(fp);
-	                                  fopen("rescource/Highscore.txt", "w");
-	                                    for (int i = 5; i >= 1; i--)
-	                                  {
-		                                    strcpy(temp, user_score[i].second.c_str());//แปลงstringให้กลายเป็นchar
-		                                        fprintf(fp,"%s %d\n",temp,user_score[i].first);
-	                    
-                                        }
-	                                        fclose(fp);
-                                            this->SoundGF.stop();
-                                            this->window->close();
-                                }
-                         this->window->display();
-                    }
+                  
                 }
-                while(this->player->getHp()<=0){
+                
+                while(this->player->getHp()<=0&&!(this->player->getLevel()==4)){
                 this->pollEvents();
                 this->window->clear();
                 this->window->draw(this->worldbackground);
                 this->window->draw(this->gameOverText);
                 this->window->draw(this->buttonExitsprite);
               
-                if(this->buttonExitsprite.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                if(this->buttonExitsprite.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)
+                &&sf::Mouse::isButtonPressed(sf::Mouse::Left))
                 {  this->fp = fopen("rescource/Highscore.txt", "r");
 	                 for (int i = 0; i < 5; i++)
 	                {
@@ -1046,6 +1017,39 @@ for(auto *bullet : this->bullets)
 
 }
  this->renderGUI();
+ if(this->player->getLevel()==4){
+                            this->pollEvents();
+                            this->window->clear();
+                            this->window->draw(this->TheEndBGsprite);
+                            this->window->draw(this->buttonExitsprite);
+                            if(this->buttonExitsprite.getGlobalBounds().contains(sf::Mouse::getPosition(*this->window).x,sf::Mouse::getPosition(*this->window).y)&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                            { this->fp = fopen("rescource/Highscore.txt", "r");
+	                             for (int i = 0; i < 5; i++)
+	                           {
+		                            fscanf(fp, "%s", &temp);
+		                            name_one[i] = temp;
+		                            fscanf(fp,"%d",&savscore[i]);
+		                            user_score.push_back(make_pair(savscore[i], name_one[i]));
+		                            
+	                            }
+                              name_one[5]=this->totalname;
+                              savscore[5] = this->point;      
+	                            user_score.push_back(make_pair(savscore[5], name_one[5]));
+                              sort(user_score.begin(),user_score.end());
+	                            fclose(fp);
+	                            fopen("rescource/Highscore.txt", "w");
+	                            for (int i = 5; i >= 1; i--)
+	                            {
+		                           strcpy(temp, user_score[i].second.c_str());//แปลงstringให้กลายเป็นchar
+		                          fprintf(fp,"%s %d\n",temp,user_score[i].first);
+	                             cout<<this->name_one[i]<<" "<<this->savscore[i];
+                              }
+	                            fclose(fp);
+                                            this->SoundGF.stop();
+                                            this->window->close();
+                                }
+                         
+                    }
 this->window->display();
 
 }
